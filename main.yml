@@ -1,0 +1,21 @@
+- hosts: ovirt_engine
+  vars:
+    location: "{{ location_code | default(inventory_file | dirname | basename) }}"
+    #lb_router: e.g. sys_default, without location code
+    #lb_name:
+    #lb_port:
+    #lb_backends: []
+    #lb_proto: tcp
+    # implement via 
+    # LB name: account+name or account+proto+port
+    # for LoadBalancer we remove location prefix
+  tasks:
+  - set_fact:
+      ovn_lb_name: "{{ lb_router.split('_').0 }}_{{ lb_name | d( (lb_proto|d('tcp'))~'_'~lb_port ) }}"
+      ovn_lb_router: "{{ location }}_{{ lb_router }}"
+  - name: Configure OVN LoadBalancer
+    shell: >
+      primary_ip=$(ovn-nbctl lr-nat-list {{ ovn_lb_router }} | grep ^snat | awk '{print $2}');
+      [ -z "$primary_ip" ] && exit 1;
+      ovn-nbctl --may-exist lb-add {{ ovn_lb_name }} $primary_ip:{{ lb_port }} {{ lb_backends | join(',') }} {{ lb_proto | d('tcp') }} &&
+      ovn-nbctl --may-exist lr-lb-add {{ ovn_lb_router }} {{ ovn_lb_name }}

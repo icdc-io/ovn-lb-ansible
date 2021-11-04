@@ -1,0 +1,6 @@
+- hosts: ovirt_engine
+
+  tasks:
+  - name: Remove OVN LoadBalancer
+    shell: >
+      ovn-nbctl lb-del {{ lb_name }}

@@ -1,4 +1,5 @@
 - hosts: ovirt_engine
+  gather_facts: no
   vars:
     location: "{{ location_code | default(inventory_file | dirname | basename) }}"
     #lb_router: e.g. sys_default, without location code

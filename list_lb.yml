@@ -1,0 +1,6 @@
+- hosts: ovirt_engine
+  gather_facts: no
+  tasks:
+  - name: List OVN LoadBalance
+    shell: >
+      ovn-nbctl -f json list load_balancer

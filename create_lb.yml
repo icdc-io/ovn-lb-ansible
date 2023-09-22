@@ -17,5 +17,5 @@
       ovn_lb_router: "{{ location }}_{{ lb_router }}"
   - name: Configure OVN LoadBalancer
     shell: >
-      ovn-nbctl --may-exist lb-add {{ ovn_lb_name }} {{ primary_ip }}:{{ lb_port }} {{ lb_backends }} {{ lb_proto | d('tcp') }} &&
+      ovn-nbctl --may-exist lb-add {{ ovn_lb_name }} {{ primary_ip }}:{{ lb_port }} "{{ lb_backends }}" {{ lb_proto | d('tcp') }} &&
       ovn-nbctl --may-exist lr-lb-add {{ ovn_lb_router }} {{ ovn_lb_name }}

@@ -15,9 +15,7 @@
   - set_fact:
       ovn_lb_name: "{{ lb_router.split('_').0 }}_{{ lb_name | d( (lb_proto|d('tcp'))~'_'~lb_port ) }}"
       ovn_lb_router: "{{ location }}_{{ lb_router }}"
-      # Fix issue with dialog params
-      ovn_lb_backends: "{{ lb_backends | ansible.builtin.split(' ') | first }}"
   - name: Configure OVN LoadBalancer
     shell: >
-      ovn-nbctl --may-exist lb-add {{ ovn_lb_name }} {{ primary_ip }}:{{ lb_port }} {{ ovn_lb_backends }} {{ lb_proto | d('tcp') }} &&
+      ovn-nbctl --may-exist lb-add {{ ovn_lb_name }} {{ primary_ip }}:{{ lb_port }} {{ lb_backends.split(' ').0 }} {{ lb_proto | d('tcp') }} &&
       ovn-nbctl --may-exist lr-lb-add {{ ovn_lb_router }} {{ ovn_lb_name }}

@@ -9,4 +9,4 @@
       ovn_lb_name: "{{ lb_router.split('_').0 }}_{{ lb_name | d( (lb_proto|d('tcp'))~'_'~lb_port ) }}"
   - name: Remove OVN LoadBalancer
     shell: >
-      ovn-nbctl lb-del {{ ovn_lb_name }}
+      ovn-nbctl lb-del "{{ ovn_lb_name | regex_replace('[^a-z0-9_].*','') }}"
